@@ -1,0 +1,28 @@
+
+# Name your project! Project names should contain only lowercase characters
+# and underscores. A good package name should reflect your organization's
+# name or the intended use of these models
+name: 'hospital_dbt_project'
+version: '1.0.0'
+
+profile: 'hospital_dbt_project'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+  
+models:
+  hospital_dbt_project:
+    staging:
+      +schema: aio
+      +materialized: view
+    marts:
+      +schema: aio
+      +materialized: table

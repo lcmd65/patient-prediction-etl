@@ -1,0 +1,12 @@
+hospital_dbt_project:
+  outputs:
+    dev:
+      dbname: hospital
+      host: postgres
+      pass: '123456'
+      port: 5432
+      schema: aio
+      threads: 5
+      type: postgres
+      user: admin
+  target: dev

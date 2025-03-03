@@ -1,0 +1,18 @@
+FROM apache/airflow:2.10.4-python3.9
+
+USER root
+RUN apt-get update && apt-get install -y \
+    python3-pip postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt /requirements.txt
+COPY scripts/airflow_init.sh /airflow_init.sh
+RUN chmod +x /airflow_init.sh
+
+USER airflow
+RUN airflow db upgrade
+RUN pip install --no-cache-dir -r /requirements.txt
+
+RUN psql "postgresql://admin:123456@postgres:5432/hospital" -f scripts/init-db.sql || true
+
+ENTRYPOINT ["/bin/bash", "-c", "/airflow_init.sh"]

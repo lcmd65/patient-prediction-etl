@@ -1,0 +1,7 @@
+version: 2
+
+sources:
+  - name: hospital
+    schema: aio
+    tables:
+      - name: raw_hospital_data
