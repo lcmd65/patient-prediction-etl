@@ -171,3 +171,7 @@ cython_debug/
 .pypirc
 
 airflow/dags/credentials.json
+.vscode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
