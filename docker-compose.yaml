@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   postgres:
     image: postgres:17
@@ -71,9 +73,38 @@ services:
       - DBT_PROFILES_DIR=/root/.dbt
     command: ["tail", "-f", "/dev/null"]
 
+  minio:
+    image: minio/minio
+    container_name: minio
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: 12345678
+    volumes:
+      - minio_data:/data
+    command: server --console-address ":9001" /data
+
+  mc:
+    image: minio/mc
+    container_name: minio-client
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 10;
+      mc alias set myminio http://minio:9000 admin 12345678;
+      mc mb myminio/bronze;
+      mc mb myminio/silver;
+      mc mb myminio/gold;
+      mc policy set public myminio/bronze;
+      mc policy set public myminio/silver;
+      mc policy set public myminio/gold;
+      exit 0;
+      "
+
 volumes:
   postgres_data:
-
-## docker compose -f 'docker-compose.yaml' up -d --build
-## docker compose build --no-cache
-## docker compose up -d
+  minio_data:

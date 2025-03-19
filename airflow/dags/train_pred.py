@@ -38,9 +38,7 @@ def split_train_predict():
 def train_model():
     train_df, _ = split_train_predict()
     request_data = train_df.to_dict(orient="records")
-
     response = requests.post(TRAIN_API_URL, json=request_data)
-
     if response.status_code == 200:
         print("Training completed successfully!")
     else:
@@ -54,9 +52,7 @@ def predict():
 
     if response.status_code == 200:
         predictions = response.json().get("forecast", [])
-
         forecast_df = pd.DataFrame(predictions)
-
         engine = create_engine(DB_CONNECTION_STRING)
         forecast_df.to_sql("aio.prediction_results", engine, if_exists="replace", index=False)
 
@@ -72,7 +68,7 @@ default_args = {
 }
 
 dag = DAG(
-    'train_and_predict_patient_volume',
+    'train_pred',
     default_args=default_args,
     schedule_interval='30 23 * * *', 
 )
